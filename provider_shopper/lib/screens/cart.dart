@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:provider_shopper/models/cart.dart';
+import 'package:provider_shopper/models/catalog.dart';
 
 class MyCart extends StatelessWidget {
   @override
@@ -47,7 +48,27 @@ class _CartList extends StatelessWidget {
           cart.items[index].name,
           style: itemNameStyle,
         ),
+        trailing: _RemoveButton(item: cart.items[index]),
       ),
+    );
+  }
+}
+
+class _RemoveButton extends StatelessWidget {
+  final Item item;
+
+  const _RemoveButton({Key key, @required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var cart = Provider.of<CartModel>(context);
+
+    return FlatButton(
+      onPressed: cart.items.contains(item) ? () => cart.remove(item) : () => null,
+      splashColor: Theme.of(context).primaryColor,
+      child: cart.items.contains(item)
+          ? Icon(Icons.remove_shopping_cart, semanticLabel: 'REMOVED')
+          : Text('REMOVE'),
     );
   }
 }
@@ -70,10 +91,10 @@ class _CartTotal extends StatelessWidget {
             FlatButton(
               onPressed: () {
                 Scaffold.of(context).showSnackBar(
-                    SnackBar(content: Text('Buying not supported yet.')));
+                    SnackBar(content: Text('Try later please.')));
               },
-              color: Colors.white,
-              child: Text('BUY'),
+              color: Colors.red,
+              child: Text('BUY ME A BEER'),
             ),
           ],
         ),
